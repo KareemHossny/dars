@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>درس المفردات </title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue: #4A90D9;
+  --green: #27AE60;
+  --red: #E74C3C;
+  --orange: #F39C12;
+  --purple: #9B59B6;
+  --blue-light: #EBF4FF;
+  --green-light: #EAFAF1;
+  --red-light: #FDEDEC;
+  --orange-light: #FEF9E7;
+  --purple-light: #F5EEF8;
+  --card: #ffffff;
+  --text: #2C3E50;
+  --text-muted: #7F8C8D;
+  --radius: 16px;
+  --shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Cairo', sans-serif;
+  background: linear-gradient(135deg, #F0F4FF 0%, #E8F5E9 100%);
+  min-height: 100vh;
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.7;
+}
+#site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: linear-gradient(135deg, #4A90D9 0%, #9B59B6 100%);
+  color: white;
+  padding: 12px 20px 0;
+  box-shadow: 0 2px 16px rgba(74,144,217,0.3);
+}
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.header-title { font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+.score-badge {
+  background: rgba(255,255,255,0.2);
+  border: 2px solid rgba(255,255,255,0.4);
+  border-radius: 30px;
+  padding: 4px 16px;
+  font-size: 15px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.score-badge strong { color: #FFE066; }
+#progress-bar-wrap { height: 8px; background: rgba(255,255,255,0.25); overflow: hidden; }
+#progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #A8E063, #56AB2F);
+  transition: width 0.5s ease;
+}
+main { max-width: 860px; margin: 0 auto; padding: 28px 16px 60px; }
+.section-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 28px 24px;
+  margin-bottom: 28px;
+}
+.section-title {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 3px solid;
+}
+.section-title.blue { color: var(--blue); border-color: var(--blue-light); }
+.section-title.green { color: var(--green); border-color: var(--green-light); }
+.section-title.orange { color: var(--orange); border-color: var(--orange-light); }
+.section-title.purple { color: var(--purple); border-color: var(--purple-light); }
+.section-icon { font-size: 26px; }
+.vocab-table { width: 100%; border-collapse: collapse; font-size: 15px; }
+.vocab-table th {
+  background: linear-gradient(135deg, #4A90D9, #9B59B6);
+  color: white;
+  padding: 12px 16px;
+  font-weight: 700;
+  font-size: 16px;
+  text-align: center;
+}
+.vocab-table td { padding: 10px 16px; text-align: center; border-bottom: 1px solid #EEF2FF; }
+.vocab-table tr:nth-child(even) td { background: #F8F9FF; }
+.vocab-table tr:hover td { background: var(--blue-light); transition: background 0.2s; }
+.vocab-table .word-cell { font-weight: 700; color: var(--blue); font-size: 17px; }
+.vocab-table .dash { color: var(--text-muted); }
+.table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid #E8ECF8; }
+.question-card {
+  border: 2px solid #EEF2FF;
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 18px;
+  transition: border-color 0.3s;
+}
+.question-card.answered-correct { border-color: var(--green); background: var(--green-light); }
+.question-card.answered-wrong { border-color: var(--red); background: var(--red-light); }
+.q-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: white;
+  font-weight: 700;
+  font-size: 14px;
+  margin-left: 10px;
+  flex-shrink: 0;
+}
+.q-text { font-size: 17px; font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; }
+.options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.option-btn {
+  background: #F8F9FF;
+  border: 2px solid #DDE3F8;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-family: 'Cairo', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  text-align: right;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.option-btn:hover:not(:disabled) { background: var(--blue-light); border-color: var(--blue); transform: translateY(-1px); }
+.option-btn.correct { background: var(--green-light); border-color: var(--green); color: #1A6B3C; }
+.option-btn.wrong { background: var(--red-light); border-color: var(--red); color: #922B21; }
+.option-btn:disabled { cursor: not-allowed; opacity: 0.85; }
+.option-letter {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.option-btn.correct .option-letter { background: var(--green); }
+.option-btn.wrong .option-letter { background: var(--red); }
+.tf-options { display: flex; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
+.tf-btn {
+  flex: 1; min-width: 100px;
+  padding: 10px 20px;
+  border: 2px solid;
+  border-radius: 10px;
+  font-family: 'Cairo', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.tf-btn.true-btn { background: var(--green-light); border-color: var(--green); color: #1A6B3C; }
+.tf-btn.false-btn { background: var(--red-light); border-color: var(--red); color: #922B21; }
+.tf-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.tf-btn:disabled { cursor: not-allowed; opacity: 0.7; }
+.tf-btn.selected-correct { background: var(--green); color: white; }
+.tf-btn.selected-wrong { background: var(--red); color: white; }
+.feedback {
+  margin-top: 12px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+.feedback.show { display: flex; }
+.feedback.correct { background: var(--green-light); color: #1A6B3C; border: 1px solid var(--green); }
+.feedback.wrong { background: var(--red-light); color: #922B21; border: 1px solid var(--red); }
+@keyframes bounce-in {
+  0% { transform: scale(0.8); opacity: 0; }
+  60% { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+.animate-bounce { animation: bounce-in 0.4s ease forwards; }
+.animate-shake { animation: shake 0.4s ease; }
+.paragraph-box {
+  background: linear-gradient(135deg, #FEF9E7, #FDFEFE);
+  border: 2px solid var(--orange);
+  border-radius: 12px;
+  padding: 20px 22px;
+  font-size: 18px;
+  line-height: 2.2;
+  font-weight: 600;
+  color: #2C3E50;
+  margin-bottom: 22px;
+  position: relative;
+}
+.paragraph-box::before {
+  content: '"';
+  font-size: 60px;
+  color: var(--orange);
+  opacity: 0.2;
+  position: absolute;
+  top: -10px; right: 14px;
+  font-family: serif;
+  line-height: 1;
+}
+.answer-textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 2px solid #DDE3F8;
+  border-radius: 10px;
+  font-family: 'Cairo', sans-serif;
+  font-size: 15px;
+  resize: vertical;
+  min-height: 70px;
+  color: var(--text);
+  transition: border-color 0.2s;
+  direction: rtl;
+  margin-top: 10px;
+  display: block;
+}
+.answer-textarea:focus { outline: none; border-color: var(--orange); }
+.answer-textarea:disabled { background: #F8F9FF; }
+.check-btn {
+  margin-top: 8px;
+  padding: 9px 22px;
+  background: var(--orange);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Cairo', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.check-btn:hover:not(:disabled) { background: #D68910; transform: translateY(-1px); }
+.check-btn:disabled { background: #BDC3C7; cursor: not-allowed; }
+.syllable-card {
+  border: 2px solid #EEF2FF;
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 16px;
+}
+.syllable-word-label {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--purple);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.syllable-inputs { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+.syl-input {
+  width: 64px;
+  height: 48px;
+  text-align: center;
+  border: 2px solid #CCC;
+  border-radius: 10px;
+  font-family: 'Cairo', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  transition: border-color 0.2s, background 0.2s;
+  direction: rtl;
+}
+.syl-input:focus { outline: none; border-color: var(--purple); }
+.syl-input.syl-correct { border-color: var(--green); background: var(--green-light); color: #1A6B3C; }
+.syl-input.syl-wrong { border-color: var(--red); background: var(--red-light); color: #922B21; }
+.syl-input:disabled { opacity: 0.85; }
+.syl-separator { font-size: 20px; color: var(--text-muted); font-weight: 700; }
+.syl-check-btn {
+  padding: 9px 20px;
+  background: var(--purple);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Cairo', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.syl-check-btn:hover:not(:disabled) { background: #7D3C98; transform: translateY(-1px); }
+.syl-check-btn:disabled { background: #BDC3C7; cursor: not-allowed; }
+.syl-answer-reveal {
+  margin-top: 10px;
+  font-size: 14px;
+  color: var(--text-muted);
+  background: #F8F9FF;
+  border-radius: 8px;
+  padding: 8px 12px;
+  display: none;
+}
+.syl-answer-reveal.show { display: block; }
+.syl-answer-reveal strong { color: var(--purple); }
+.audio-btn {
+  background: linear-gradient(135deg, var(--purple), #6c3483);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-family: 'Cairo', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.audio-btn:hover { transform: scale(1.05); box-shadow: 0 3px 10px rgba(155,89,182,0.4); }
+.audio-btn:active { transform: scale(0.97); }
+.syl-hint { font-size: 13px; color: var(--text-muted); margin-bottom: 10px; }
+.letter-slots { gap: 8px; }
+.syl-letter {
+  width: 46px;
+  height: 46px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  border: 2px solid #C8A2D8;
+  border-radius: 10px;
+  background: var(--purple-light);
+  color: var(--purple);
+  transition: all 0.2s;
+  padding: 0;
+}
+.syl-letter:focus { outline: none; border-color: var(--purple); background: white; box-shadow: 0 0 0 3px rgba(155,89,182,0.2); }
+.syl-letter.syl-correct { border-color: var(--green); background: var(--green-light); color: #1A6B3C; }
+.syl-letter.syl-wrong { border-color: var(--red); background: var(--red-light); color: #922B21; }
+#results-section {
+  display: none;
+  background: linear-gradient(135deg, #4A90D9, #9B59B6);
+  color: white;
+  border-radius: var(--radius);
+  box-shadow: 0 8px 32px rgba(74,144,217,0.35);
+  padding: 36px 28px;
+  margin-bottom: 28px;
+  text-align: center;
+}
+#results-section.show { display: block; animation: bounce-in 0.5s ease; }
+.results-stars { font-size: 48px; margin: 16px 0 8px; }
+.results-score-big { font-size: 52px; font-weight: 800; margin: 8px 0; color: #FFE066; }
+.results-label { font-size: 17px; opacity: 0.9; margin-bottom: 6px; }
+.results-msg { font-size: 20px; font-weight: 700; margin: 14px 0 24px; }
+.results-pct { font-size: 18px; opacity: 0.85; margin-bottom: 20px; }
+.retry-btn {
+  background: white;
+  color: #4A90D9;
+  border: none;
+  border-radius: 30px;
+  padding: 12px 36px;
+  font-family: 'Cairo', sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+}
+.retry-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
+@media (max-width: 768px) {
+  .section-card { padding: 18px 14px; }
+  .options-grid { grid-template-columns: 1fr; }
+  .header-title { font-size: 14px; }
+  .vocab-table th, .vocab-table td { padding: 8px 8px; font-size: 13px; }
+}
+@media (min-width: 1024px) {
+  main { padding: 36px 16px 80px; }
+  .section-card { padding: 32px 36px; }
+}
+</style>
+</head>
+<body>
+
+<header id="site-header">
+  <div class="header-top">
+    <div class="header-title">
+      <span>📚</span> درس المفردات — الصف الثالث الابتدائي
+    </div>
+    <div class="score-badge">
+      الدرجة: <strong id="score-current">0</strong> / <span id="score-total">0</span>
+    </div>
+  </div>
+  <div id="progress-bar-wrap">
+    <div id="progress-bar"></div>
+  </div>
+</header>
+
+<main>
+
+<div id="results-section">
+  <div class="results-label">🎉 أحسنت! لقد أكملت جميع الأسئلة</div>
+  <div class="results-stars" id="res-stars">⭐⭐⭐</div>
+  <div class="results-score-big" id="res-score">0 / 0</div>
+  <div class="results-pct" id="res-pct">النسبة: 0%</div>
+  <div class="results-msg" id="res-msg"></div>
+  <button class="retry-btn" onclick="location.reload()">🔄 إعادة المحاولة</button>
+</div>
+
+<section class="section-card">
+  <h2 class="section-title blue"><span class="section-icon">📖</span> مفردات الدرس</h2>
+  <div class="table-wrap">
+    <table class="vocab-table">
+      <thead><tr><th>الكلمة</th><th>المعنى</th><th>المضاد</th><th>الجمع</th></tr></thead>
+      <tbody id="vocab-body"></tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section-card">
+  <h2 class="section-title blue"><span class="section-icon">✏️</span> أولاً: اختيار من متعدد</h2>
+  <div id="mcq-container"></div>
+</section>
+
+<section class="section-card">
+  <h2 class="section-title green"><span class="section-icon">✅</span> ثانياً: صح أم خطأ</h2>
+  <div id="tf-container"></div>
+</section>
+
+<section class="section-card">
+  <h2 class="section-title orange"><span class="section-icon">📝</span> ثالثاً: استخراج من الفقرة</h2>
+  <div class="paragraph-box" id="paragraph-box"></div>
+  <div id="para-container"></div>
+</section>
+
+<section class="section-card">
+  <h2 class="section-title purple"><span class="section-icon">🔤</span> رابعاً: تحليل المقاطع الصوتية</h2>
+  <div id="syllable-container"></div>
+</section>
+
+</main>
+
+<script>
+/* ══ DATA — EDIT HERE ══ */
+const vocabularyData = [
+  { word: "صَبَرَ",   meaning: "تحمَّل بهدوء",    opposite: "جَزِعَ", plural: "أصبار" },
+  { word: "كَرِيمٌ",  meaning: "سخيّ المعطاء",    opposite: "بخيل",   plural: "كرماء" },
+  { word: "نَظِيفٌ",  meaning: "خالٍ من الأوساخ", opposite: "قذر",    plural: "—" },
+  { word: "فَرِحَ",   meaning: "شعر بالسعادة",    opposite: "حَزِنَ", plural: "—" },
+  { word: "عَلِمَ",   meaning: "أدرك وعرف",        opposite: "جَهِلَ", plural: "علماء" },
+  { word: "شَجَاعٌ",  meaning: "لا يخاف",          opposite: "جبان",   plural: "شجعان" },
+  { word: "عَمِلَ",   meaning: "قام بفعل شيء",     opposite: "كَسِلَ", plural: "أعمال" },
+  { word: "جَمِيلٌ",  meaning: "حسن المنظر",       opposite: "قبيح",   plural: "—" },
+];
+
+const multipleChoiceQuestions = [
+  { q: "ما مضاد كلمة «كريم»؟",                           options: ["بخيل","شجاع","نظيف","فرح"],       correct: 0 },
+  { q: "ما جمع كلمة «عالِم»؟",                           options: ["عوالم","علماء","عُلُم","عالمون"], correct: 1 },
+  { q: "ما معنى «صَبَرَ»؟",                              options: ["فرح","كذب","تحمَّل بهدوء","نام"],  correct: 2 },
+  { q: "أيّ الكلمات التالية تدل على الشجاعة؟",           options: ["جبان","خائف","شجاع","كسول"],      correct: 2 },
+  { q: "ما مضاد «فَرِحَ»؟",                              options: ["ابتسم","حزن","لعب","نام"],         correct: 1 },
+];
+
+const trueFalseStatements = [
+  { s: "مضاد «نظيف» هو «قذر»",                      correct: true,  exp: "" },
+  { s: "جمع «كريم» هو «كرام»",                       correct: false, exp: "الصحيح: كرماء" },
+  { s: "معنى «عَلِمَ» هو جَهِلَ",                     correct: false, exp: "الصحيح: أدرك وعرف" },
+  { s: "«شجاع» صفة تدل على الإقدام وعدم الخوف",      correct: true,  exp: "" },
+  { s: "مضاد «جميل» هو «حسن»",                       correct: false, exp: "الصحيح: قبيح" },
+];
+
+const paragraphText = "كانَ يُوسُفُ طِفلاً صَبُوراً وَكَرِيماً، يُحِبُّ مُسَاعَدَةَ أَصْدِقَائِهِ فِي الْمَدْرَسَةِ. كَانَ دَائِمًا نَظِيفَ الثِّيَابِ مُرَتَّبَ الشَّعْرِ. وَكَانَ يَفْرَحُ كَثِيرًا عِنْدَمَا يَتَعَلَّمُ شَيْئًا جَدِيدًا، وَيَعْمَلُ بِجِدٍّ وَاجْتِهَادٍ كُلَّ يَوْمٍ.";
+
+const paragraphQuestions = [
+  {
+    q: "كيف كان يوسف في مدرسته؟",
+    keywords: ["مساعدة","مساعده","يساعد","يحب مساعدة","صبور","كريم"],
+    negative: ["لا","ليس","لم","مش","غير","لن","ما كان"]
+  },
+  {
+    q: "ما الصفات التي وصف بها يوسف؟",
+    keywords: ["صبور","كريم","نظيف","صبورا","كريما","نظيفا"],
+    negative: ["لا","ليس","لم","مش","غير","لن","ما كان"]
+  },
+  {
+    q: "متى كان يوسف يفرح؟",
+    keywords: ["يتعلم","تعلم","جديد","جديدا","يتعلمو","تعلم شيئا"],
+    negative: ["لا يتعلم","لم يتعلم","لا يتعلمو","لا تعلم","لن يتعلم","ما يتعلم","لا يتعل"]
+  },
+];
+
+const syllableWords = [
+  {
+    word: "كَرِيمٌ",
+    syllables: ["كَ","رِي","مٌ"],
+    letters: ["ك","ر","ي","م"],
+    audio: "https://www.arabicreaders.com/audio/karim.mp3"
+  },
+  {
+    word: "صَبُورٌ",
+    syllables: ["صَ","بُو","رٌ"],
+    letters: ["ص","ب","و","ر"],
+    audio: ""
+  },
+  {
+    word: "مَدْرَسَةٌ",
+    syllables: ["مَدْ","رَ","سَةٌ"],
+    letters: ["م","د","ر","س","ة"],
+    audio: ""
+  },
+  {
+    word: "مُسَاعَدَةٌ",
+    syllables: ["مُ","سَا","عَ","دَةٌ"],
+    letters: ["م","س","ا","ع","د","ة"],
+    audio: ""
+  },
+];
+
+/* ══ SCORE ══ */
+let totalQ = 0, answered = 0, correct = 0;
+
+function initScore() {
+  totalQ = multipleChoiceQuestions.length + trueFalseStatements.length +
+           paragraphQuestions.length + syllableWords.length;
+  document.getElementById('score-total').textContent = totalQ;
+}
+
+function updateScore(isCorrect) {
+  answered++;
+  if (isCorrect) correct++;
+  document.getElementById('score-current').textContent = correct;
+  document.getElementById('progress-bar').style.width = (answered / totalQ * 100) + '%';
+  if (answered >= totalQ) setTimeout(showResults, 600);
+}
+
+function removeDiacritics(str) {
+  return str.replace(/[\u0610-\u061A\u064B-\u065F]/g, '').trim();
+}
+
+/* ══ VOCAB ══ */
+function buildVocab() {
+  const tb = document.getElementById('vocab-body');
+  vocabularyData.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td class="word-cell">' + r.word + '</td><td>' + r.meaning + '</td><td>' + r.opposite + '</td><td class="' + (r.plural==='—'?'dash':'') + '">' + r.plural + '</td>';
+    tb.appendChild(tr);
+  });
+}
+
+/* ══ MCQ ══ */
+const LTR = ['أ','ب','ج','د'];
+function buildMCQ() {
+  const c = document.getElementById('mcq-container');
+  multipleChoiceQuestions.forEach((q, qi) => {
+    const div = document.createElement('div');
+    div.className = 'question-card';
+    div.id = 'mcq-' + qi;
+    const opts = q.options.map((o, oi) =>
+      '<button class="option-btn" onclick="checkMCQ(' + qi + ',' + oi + ')" id="mo-' + qi + '-' + oi + '"><span class="option-letter">' + LTR[oi] + '</span>' + o + '</button>'
+    ).join('');
+    div.innerHTML = '<div class="q-text"><span class="q-number">' + (qi+1) + '</span>' + q.q + '</div><div class="options-grid">' + opts + '</div><div class="feedback" id="mf-' + qi + '"></div>';
+    c.appendChild(div);
+  });
+}
+
+function checkMCQ(qi, sel) {
+  const q = multipleChoiceQuestions[qi];
+  const ok = sel === q.correct;
+  q.options.forEach((_, oi) => {
+    const b = document.getElementById('mo-' + qi + '-' + oi);
+    b.disabled = true;
+    if (oi === q.correct) b.classList.add('correct');
+    else if (oi === sel && !ok) b.classList.add('wrong');
+  });
+  const fb = document.getElementById('mf-' + qi);
+  fb.className = 'feedback show ' + (ok ? 'correct' : 'wrong');
+  fb.innerHTML = ok ? '✅ أحسنت! إجابة صحيحة 🎉' : '❌ إجابة خاطئة، الصحيح هو: <strong>' + q.options[q.correct] + '</strong>';
+  fb.classList.add(ok ? 'animate-bounce' : 'animate-shake');
+  document.getElementById('mcq-' + qi).classList.add(ok ? 'answered-correct' : 'answered-wrong');
+  updateScore(ok);
+}
+
+/* ══ TRUE/FALSE ══ */
+function buildTF() {
+  const c = document.getElementById('tf-container');
+  trueFalseStatements.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'question-card';
+    div.id = 'tf-' + i;
+    div.innerHTML = '<div class="q-text"><span class="q-number">' + (i+1) + '</span>' + item.s + '</div>'
+      + '<div class="tf-options">'
+      + '<button class="tf-btn true-btn" onclick="checkTF(' + i + ',true)" id="tt-' + i + '">✓ صح</button>'
+      + '<button class="tf-btn false-btn" onclick="checkTF(' + i + ',false)" id="tf2-' + i + '">✗ خطأ</button>'
+      + '</div><div class="feedback" id="tff-' + i + '"></div>';
+    c.appendChild(div);
+  });
+}
+
+function checkTF(i, ans) {
+  const item = trueFalseStatements[i];
+  const ok = ans === item.correct;
+  const tb = document.getElementById('tt-' + i);
+  const fb2 = document.getElementById('tf2-' + i);
+  tb.disabled = fb2.disabled = true;
+  (ans ? tb : fb2).classList.add(ok ? 'selected-correct' : 'selected-wrong');
+  const fb = document.getElementById('tff-' + i);
+  fb.className = 'feedback show ' + (ok ? 'correct' : 'wrong');
+  fb.innerHTML = ok ? '✅ أحسنت! إجابة صحيحة 🎉' : '❌ إجابة خاطئة، الصحيح هو: <strong>' + (item.correct?'صح':'خطأ') + '</strong>' + (item.exp ? ' — ' + item.exp : '');
+  fb.classList.add(ok ? 'animate-bounce' : 'animate-shake');
+  document.getElementById('tf-' + i).classList.add(ok ? 'answered-correct' : 'answered-wrong');
+  updateScore(ok);
+}
+
+/* ══ PARAGRAPH ══ */
+function buildParagraph() {
+  document.getElementById('paragraph-box').textContent = paragraphText;
+  const c = document.getElementById('para-container');
+  paragraphQuestions.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'question-card';
+    div.id = 'para-' + i;
+    div.innerHTML = '<div class="q-text"><span class="q-number">' + (i+1) + '</span>' + q.q + '</div>'
+      + '<textarea class="answer-textarea" id="pta-' + i + '" placeholder="اكتب إجابتك هنا..."></textarea>'
+      + '<button class="check-btn" onclick="checkPara(' + i + ')">تحقق من الإجابة ✔</button>'
+      + '<div class="feedback" id="pf-' + i + '"></div>';
+    c.appendChild(div);
+  });
+}
+
+function checkPara(i) {
+  const q = paragraphQuestions[i];
+  const ta = document.getElementById('pta-' + i);
+  const fb = document.getElementById('pf-' + i);
+  const raw = removeDiacritics(ta.value);
+  if (!raw) { fb.className='feedback show wrong'; fb.textContent='⚠️ الرجاء كتابة إجابة أولاً'; return; }
+
+  // Check if answer contains a negative pattern around any keyword
+  const hasNegative = (q.negative || []).some(neg => raw.includes(removeDiacritics(neg)));
+  const hasKeyword = q.keywords.some(k => raw.includes(removeDiacritics(k)));
+  const ok = hasKeyword && !hasNegative;
+
+  ta.disabled = true;
+  ta.nextElementSibling.disabled = true;
+  fb.className = 'feedback show ' + (ok ? 'correct' : 'wrong');
+  if (ok) {
+    fb.innerHTML = '✅ أحسنت! إجابة صحيحة 🎉';
+  } else if (hasNegative && hasKeyword) {
+    fb.innerHTML = '❌ انتبه! إجابتك تحتوي على نفي — راجعها مرة أخرى';
+  } else {
+    fb.innerHTML = '❌ إجابة غير مكتملة، تأكد من ذكر: <strong>' + q.keywords[0] + '</strong>';
+  }
+  fb.classList.add(ok ? 'animate-bounce' : 'animate-shake');
+  document.getElementById('para-' + i).classList.add(ok ? 'answered-correct' : 'answered-wrong');
+  updateScore(ok);
+}
+
+/* ══ SYLLABLES ══ */
+function speakArabic(word) {
+  if (!window.speechSynthesis) return;
+  const clean = word.replace(/[\u0610-\u061A\u064B-\u065F]/g, '');
+  const utt = new SpeechSynthesisUtterance(clean);
+  utt.lang = 'ar-EG';
+  utt.rate = 0.85;
+  // prefer Arabic voice if available
+  const voices = window.speechSynthesis.getVoices();
+  const arVoice = voices.find(v => v.lang.startsWith('ar'));
+  if (arVoice) utt.voice = arVoice;
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(utt);
+}
+
+function buildSyllables() {
+  // preload voices
+  if (window.speechSynthesis) window.speechSynthesis.getVoices();
+
+  const c = document.getElementById('syllable-container');
+  syllableWords.forEach((item, wi) => {
+    const div = document.createElement('div');
+    div.className = 'syllable-card';
+    div.id = 'syl-' + wi;
+
+    // One input per LETTER (not per syllable)
+    const letterInputs = item.letters.map((ltr, li) =>
+      '<input class="syl-input syl-letter" type="text" maxlength="1" id="sl-' + wi + '-' + li + '" placeholder="' + (li+1) + '" data-correct="' + ltr + '">'
+    ).join('');
+
+    // Syllable answer display
+    const sylDisplay = item.syllables.join(' | ');
+
+    div.innerHTML =
+      '<div class="syllable-word-label">' +
+        '<button class="audio-btn" onclick="speakArabic(\'' + item.word + '\')" title="استمع للكلمة">🔊 استمع</button>' +
+        '<span>' + item.word + '</span>' +
+      '</div>' +
+      '<p class="syl-hint">اكتب كل حرف في مكانه:</p>' +
+      '<div class="syllable-inputs letter-slots">' + letterInputs + '</div>' +
+      '<button class="syl-check-btn" onclick="checkSyl(' + wi + ')">تحقق ✔</button>' +
+      '<div class="feedback" id="sf-' + wi + '"></div>' +
+      '<div class="syl-answer-reveal" id="sa-' + wi + '">المقاطع الصحيحة: <strong>' + sylDisplay + '</strong></div>';
+    c.appendChild(div);
+
+    // Auto-advance to next input on single char entry
+    item.letters.forEach((_, li) => {
+      const inp = document.getElementById('sl-' + wi + '-' + li);
+      inp.addEventListener('input', function() {
+        if (this.value.length >= 1) {
+          const next = document.getElementById('sl-' + wi + '-' + (li+1));
+          if (next) next.focus();
+        }
+      });
+    });
+  });
+}
+
+function checkSyl(wi) {
+  const item = syllableWords[wi];
+  let allOk = true;
+  item.letters.forEach((ltr, li) => {
+    const inp = document.getElementById('sl-' + wi + '-' + li);
+    const userLtr = removeDiacritics(inp.value.trim());
+    const correctLtr = removeDiacritics(ltr);
+    const ok = userLtr === correctLtr;
+    inp.disabled = true;
+    inp.classList.remove('syl-correct','syl-wrong');
+    inp.classList.add(ok ? 'syl-correct' : 'syl-wrong');
+    if (!ok) allOk = false;
+  });
+  document.getElementById('syl-' + wi).querySelector('.syl-check-btn').disabled = true;
+  const fb = document.getElementById('sf-' + wi);
+  fb.className = 'feedback show ' + (allOk ? 'correct' : 'wrong');
+  fb.innerHTML = allOk ? '✅ ممتاز! تحليل صحيح تماماً 🎉' : '❌ بعض الحروف خاطئة، راجع الإجابة أدناه';
+  fb.classList.add(allOk ? 'animate-bounce' : 'animate-shake');
+  if (!allOk) document.getElementById('sa-' + wi).classList.add('show');
+  updateScore(allOk);
+}
+
+/* ══ RESULTS ══ */
+function showResults() {
+  const pct = Math.round(correct / totalQ * 100);
+  document.getElementById('res-score').textContent = correct + ' / ' + totalQ;
+  document.getElementById('res-pct').textContent = 'النسبة: ' + pct + '%';
+  let stars, msg;
+  if (pct >= 90) { stars = '⭐⭐⭐'; msg = 'ممتاز! أنت نجم الفصل 🌟'; }
+  else if (pct >= 70) { stars = '⭐⭐'; msg = 'جيد جداً! استمر في التميز 👏'; }
+  else { stars = '⭐'; msg = 'حاول مرة أخرى، أنت تستطيع! 💪'; }
+  document.getElementById('res-stars').textContent = stars;
+  document.getElementById('res-msg').textContent = msg;
+  const rs = document.getElementById('results-section');
+  rs.classList.add('show');
+  rs.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+/* ══ INIT ══ */
+document.addEventListener('DOMContentLoaded', function() {
+  initScore();
+  buildVocab();
+  buildMCQ();
+  buildTF();
+  buildParagraph();
+  buildSyllables();
+});
+</script>
+</body>
+</html>
